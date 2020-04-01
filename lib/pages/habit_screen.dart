@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flhabittracker/models/habit_model.dart';
 import 'package:flhabittracker/pages/add_habit_screen.dart';
+import 'package:flhabittracker/animations/page_bounce_transition.dart';
 
 class Habits extends StatefulWidget {
   @override
@@ -62,19 +63,7 @@ class _HabitsState extends State<Habits> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.amberAccent,
         onPressed: (){
-          Navigator.push(context, PageRouteBuilder(
-          transitionDuration: Duration(milliseconds: 500),
-          transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> animationEnd, Widget child){
-            animation = CurvedAnimation(parent: animation, curve: Curves.elasticInOut);
-            return ScaleTransition(
-            alignment: Alignment.bottomRight,
-            scale: animation,
-            child: child
-            );
-          },
-          pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> animationEnd){
-            return AddHabit();
-          }));
+          Navigator.push(context, CustomPageBounceTransition(widget: AddHabit()));
           },
         child: Icon(
           Icons.add,
