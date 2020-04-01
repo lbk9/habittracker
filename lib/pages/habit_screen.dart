@@ -63,7 +63,7 @@ class _HabitsState extends State<Habits> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.amberAccent,
         onPressed: (){
-          Navigator.push(context, CustomPageBounceTransition(widget: AddHabit()));
+          Navigator.pushReplacement(context, CustomPageBounceTransition(widget: AddHabit()));
           },
         child: Icon(
           Icons.add,

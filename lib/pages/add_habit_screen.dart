@@ -1,6 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:flhabittracker/models/habit_model.dart';
 
 class AddHabit extends StatefulWidget {
   @override
@@ -8,6 +8,8 @@ class AddHabit extends StatefulWidget {
 }
 
 class _AddHabitState extends State<AddHabit> {
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,9 +23,55 @@ class _AddHabitState extends State<AddHabit> {
           ),
         ),
       ),
-      body: Text(
-        'Add a habit here',
-      )
-    );
+      body: Padding(
+        padding: const EdgeInsets.all(30.0),
+        child: Form(
+          key: _formKey,
+          child: new ListView(
+            children: <Widget>[
+              new TextFormField(
+                decoration: const InputDecoration(
+                  labelStyle: TextStyle(
+                    color: Colors.amber
+                  ),
+                  icon: const Icon(
+                    Icons.edit,
+                    color: Colors.white),
+                  labelText: 'Habit',
+                  focusColor: Colors.amber
+                ),
+                keyboardType: TextInputType.text,
+                style: TextStyle(
+                  color: Colors.white
+                ),
+              ),
+              new TextFormField(
+                decoration: const InputDecoration(
+                  labelStyle: TextStyle(
+                    color: Colors.amber,
+                  ),
+                  icon: const Icon(
+                    Icons.date_range,
+                    color: Colors.white),
+                  labelText: 'Date & Time'
+                ),
+                keyboardType: TextInputType.datetime,
+                style: TextStyle(
+                  color: Colors.white
+                ),
+              ),
+              new RaisedButton(
+                color: Colors.amber,
+                child: const Text(
+                  'Confirm'
+                ),
+                onPressed: (){},
+                shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
+              )
+            ],
+          )
+        )
+      ),
+      );
   }
 }
