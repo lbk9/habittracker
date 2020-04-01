@@ -65,7 +65,7 @@ class _HabitsState extends State<Habits> {
           Navigator.push(context, PageRouteBuilder(
           transitionDuration: Duration(milliseconds: 500),
           transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> animationEnd, Widget child){
-            animation = CurvedAnimation(parent: animation, curve: Curves.elasticInOut, reverseCurve: Curves.elasticOut);
+            animation = CurvedAnimation(parent: animation, curve: Curves.elasticInOut);
             return ScaleTransition(
             alignment: Alignment.bottomRight,
             scale: animation,
