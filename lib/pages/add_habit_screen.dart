@@ -1,6 +1,8 @@
+import 'package:flhabittracker/pages/habit_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flhabittracker/animations/page_bounce_transition.dart';
 
 class AddHabit extends StatefulWidget {
   @override
@@ -65,7 +67,9 @@ class _AddHabitState extends State<AddHabit> {
                 child: const Text(
                   'Confirm'
                 ),
-                onPressed: (){},
+                onPressed: (){
+                  Navigator.pushReplacement(context, CustomPageBounceTransition(widget: Habits(), alignment: Alignment.center));
+                },
                 shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
               )
             ],
