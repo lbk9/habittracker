@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flhabittracker/models/habit_model.dart';
+import 'package:flhabittracker/pages/add_habit_screen.dart';
+import 'package:flhabittracker/animations/page_bounce_transition.dart';
 
 class Habits extends StatefulWidget {
   @override
@@ -17,6 +19,11 @@ class _HabitsState extends State<Habits> {
     setState(() {
       habitList[index].streak++;
     });
+  }
+
+  void addHabit(Habit habit){
+    var newHabit = new Habit(habit.title, habit.latestEntry);
+    habitList.add(newHabit);
   }
 
   @override
@@ -56,8 +63,8 @@ class _HabitsState extends State<Habits> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.amberAccent,
         onPressed: (){
-          //function
-        },
+          Navigator.pushReplacement(context, CustomPageBounceTransition(widget: AddHabit(), alignment: Alignment.bottomRight));
+          },
         child: Icon(
           Icons.add,
           color: Colors.black),
