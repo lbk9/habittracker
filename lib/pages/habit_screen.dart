@@ -13,6 +13,9 @@ class _HabitsState extends State<Habits> {
   List<Habit> habitList =[
     Habit('Yoga', DateTime.now()),
     Habit('Run', DateTime.now()),
+    Habit('Cycle', DateTime.now()),
+    Habit('Home workout', DateTime.now()),
+    Habit('Water plants', DateTime.now())
   ];
 
   void incrementStreak(int index){
@@ -34,13 +37,13 @@ class _HabitsState extends State<Habits> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[700],
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.amber,
+        backgroundColor: Colors.deepPurple[700],
         title: Text(
           'Habit Tracker',
           style: TextStyle(
-            color: Colors.black,
+            color: Colors.white,
           ),
         ),
       ),
@@ -48,7 +51,7 @@ class _HabitsState extends State<Habits> {
         itemCount: habitList.length,
         itemBuilder: (context, index) {
           return Card(
-            color: Colors.grey[400],
+            color: Colors.blueGrey[100],
             child: ListTile(
               title: Text(habitList[index].title),
               subtitle: Text('You last done this on ${habitList[index].latestEntryAsDate}'),
@@ -61,13 +64,13 @@ class _HabitsState extends State<Habits> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.amberAccent,
+        backgroundColor: Colors.purpleAccent,
         onPressed: (){
           Navigator.pushReplacement(context, CustomPageBounceTransition(widget: AddHabit(), alignment: Alignment.bottomRight));
           },
         child: Icon(
           Icons.add,
-          color: Colors.black),
+          color: Colors.white),
       ),
     );
   }

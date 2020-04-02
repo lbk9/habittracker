@@ -15,13 +15,13 @@ class _AddHabitState extends State<AddHabit> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[700],
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.amber,
+        backgroundColor: Colors.deepPurple[700],
         title: Text(
           'Add Habit',
           style: TextStyle(
-            color: Colors.black
+            color: Colors.white
           ),
         ),
       ),
@@ -34,43 +34,49 @@ class _AddHabitState extends State<AddHabit> {
               new TextFormField(
                 decoration: const InputDecoration(
                   labelStyle: TextStyle(
-                    color: Colors.amber
+                    color: Colors.purple
                   ),
                   icon: const Icon(
                     Icons.edit,
-                    color: Colors.white),
+                    color: Colors.grey),
                   labelText: 'Habit',
-                  focusColor: Colors.amber
+                  focusColor: Colors.purple
                 ),
                 keyboardType: TextInputType.text,
                 style: TextStyle(
-                  color: Colors.white
+                  color: Colors.black
                 ),
               ),
               new TextFormField(
                 decoration: const InputDecoration(
                   labelStyle: TextStyle(
-                    color: Colors.amber,
+                    color: Colors.purple,
                   ),
                   icon: const Icon(
                     Icons.date_range,
-                    color: Colors.white),
+                    color: Colors.grey),
                   labelText: 'Date & Time'
                 ),
                 keyboardType: TextInputType.datetime,
                 style: TextStyle(
-                  color: Colors.white
+                  color: Colors.black
                 ),
               ),
-              new RaisedButton(
-                color: Colors.amber,
-                child: const Text(
-                  'Confirm'
+              Padding(
+                padding: const EdgeInsets.only(left:20.0, top: 30.0, right: 20.0),
+                child: new RaisedButton(
+                  color: Colors.purpleAccent,
+                  child: const Text(
+                    'Confirm',
+                    style: TextStyle(
+                      color: Colors.white
+                    ),
+                  ),
+                  onPressed: (){
+                    Navigator.pushReplacement(context, CustomPageBounceTransition(widget: Habits(), alignment: Alignment.center));
+                  },
+                  shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
                 ),
-                onPressed: (){
-                  Navigator.pushReplacement(context, CustomPageBounceTransition(widget: Habits(), alignment: Alignment.center));
-                },
-                shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
               )
             ],
           )
