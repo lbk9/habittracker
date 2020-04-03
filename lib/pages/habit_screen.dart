@@ -1,3 +1,4 @@
+import 'package:flhabittracker/services/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flhabittracker/models/habit_model.dart';
@@ -47,21 +48,57 @@ class _HabitsState extends State<Habits> {
           ),
         ),
       ),
-      body: ListView.builder(
-        itemCount: habitList.length,
-        itemBuilder: (context, index) {
-          return Card(
-            color: Colors.blueGrey[100],
-            child: ListTile(
-              title: Text(habitList[index].title),
-              subtitle: Text('You last done this on ${habitList[index].latestEntryAsDate}'),
-              trailing: Text('${habitList[index].streak}'),
-              onTap: (){
-                incrementStreak(index);
-              },
-            ),
-          );
-        },
+      body: Column(
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              RaisedButton(
+                color: Colors.purpleAccent,
+                onPressed: () {
+                  StorageService storageService = new StorageService();
+                  var jsonList = storageService.readAllHabits();
+                },
+                child: const Text(
+                  'Load Habits',
+                  style: const TextStyle(
+                    color: Colors.white
+                  ),
+                ),
+              ),
+              RaisedButton(
+                color: Colors.red,
+                onPressed: () {
+                  StorageService storageService = new StorageService();
+                  storageService.clearFileContents();
+                },
+                child: const Text(
+                  'Clear Habits',
+                  style: const TextStyle(
+                      color: Colors.white
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Flexible(
+            child: ListView.builder(
+                itemCount: habitList.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    color: Colors.blueGrey[100],
+                    child: ListTile(
+                      title: Text(habitList[index].title),
+                      subtitle: Text('You last done this on ${habitList[index].latestEntryAsDate}'),
+                      trailing: Text('${habitList[index].streak}'),
+                      onTap: (){
+                        incrementStreak(index);
+                      },
+                    ),
+                  );
+                },
+              ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.purpleAccent,

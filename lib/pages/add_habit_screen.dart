@@ -88,10 +88,14 @@ class _AddHabitState extends State<AddHabit> {
   Future<void> saveAndNavigate() async {
     StorageService storageService = new StorageService();
     List<Habit> habits = new List<Habit>();
-    var habit = new Habit('test', DateTime.now());
+    var habit = new Habit('test1', DateTime.now());
+    var habit2 = new Habit('test2', DateTime.now());
+    var habit3 = new Habit('test3', DateTime.now());
     habits.add(habit);
-    await storageService.persistAllHabits(habits);
-    print(await storageService.readAllHabits());
+    habits.add(habit2);
+    habits.add(habit3);
+    var habitJson = Habit.convertToJson(habits);
+    await storageService.persistAllHabits(habitJson);
     Navigator.pushReplacement(context, CustomPageBounceTransition(widget: Habits(), alignment: Alignment.center));
   }
 }

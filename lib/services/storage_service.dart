@@ -23,23 +23,32 @@ class StorageService {
     return file.writeAsString(habitJson);
   }
 
-  Future<File> persistAllHabits(List<Habit> habits) async {
+  Future<File> persistAllHabits(String habits) async {
     final file = await _localFile;
-    var habitList = jsonEncode(habits);
-    print(habitList);
-    return file.writeAsString(habitList);
+    print('$habits, $file');
+    // needs to updated to correctly store new habits without overwriting previous ones
+    return file.writeAsString('${await file.readAsString()},$habits');
   }
 
   Future<List<Habit>> readAllHabits() async {
     var habitList = new List<Habit>();
     try{
       final file = await _localFile;
-      var contents = await file.readAsString();
-      return Habit.fromJsonList(contents);
+      var responseJson = json.decode(await file.readAsString()) as List;
+      List<Habit> habits = (responseJson.map((p) => Habit.fromJson(p)).toList());
+      print(habits.length);
+      return habits;
     } catch (e){
       print(e.toString());
       return habitList;
     }
   }
+
+  Future<void> clearFileContents() async {
+  final file = await _localFile;
+  file.writeAsString('');
+  print(await readAllHabits());
+}
+
 
 }

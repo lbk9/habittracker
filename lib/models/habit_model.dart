@@ -1,6 +1,8 @@
 import 'package:intl/intl.dart';
 import 'dart:convert';
 
+Habit habitFromJson(String str) => Habit.fromJson(jsonDecode(str));
+
 class Habit{
   final dateFormatter = DateFormat('dd/MM/yyyy');
   String title;
@@ -30,22 +32,19 @@ class Habit{
     return streak;
   }
 
-  static Habit fromJsonMap(Map<String, dynamic> json){
-    String title = json['title'];
-    DateTime latestEntry = DateTime.parse(json['latestEntry']);
-    Habit h = new Habit(title, latestEntry);
-    return h;
+  Map<String, dynamic> toJson() {
+    return {
+      "title": this.title,
+      "latestEntry": this.latestEntry.toString()
+    };
   }
 
-  static List<Habit> fromJsonList(String json){
-    Map<String, dynamic> decodedMap = jsonDecode(json);
-    List<dynamic> habitDynamicList = decodedMap['habits'];
-    List<Habit> habits = new List<Habit>();
-    habitDynamicList.forEach((f) {
-      Habit h = fromJsonMap(f);
-      habits.add(h);
-    });
-
-    return habits;
+  static String convertToJson(List<Habit> habits){
+    return jsonEncode(habits.map((i) => i.toJson()).toList()).toString();
   }
+  
+  factory Habit.fromJson(Map<String, dynamic> json) => Habit(
+    json['title'].toString(),
+    DateTime.parse(json['latestEntry'])
+  );
 }
