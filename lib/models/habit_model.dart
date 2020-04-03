@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+import 'dart:convert';
 
 class Habit{
   final dateFormatter = DateFormat('dd/MM/yyyy');
@@ -27,5 +28,24 @@ class Habit{
         streak = 1;
       }
     return streak;
+  }
+
+  static Habit fromJsonMap(Map<String, dynamic> json){
+    String title = json['title'];
+    DateTime latestEntry = DateTime.parse(json['latestEntry']);
+    Habit h = new Habit(title, latestEntry);
+    return h;
+  }
+
+  static List<Habit> fromJsonList(String json){
+    Map<String, dynamic> decodedMap = jsonDecode(json);
+    List<dynamic> habitDynamicList = decodedMap['habits'];
+    List<Habit> habits = new List<Habit>();
+    habitDynamicList.forEach((f) {
+      Habit h = fromJsonMap(f);
+      habits.add(h);
+    });
+
+    return habits;
   }
 }

@@ -26,18 +26,16 @@ class StorageService {
   Future<File> persistAllHabits(List<Habit> habits) async {
     final file = await _localFile;
     var habitList = jsonEncode(habits);
+    print(habitList);
     return file.writeAsString(habitList);
   }
 
   Future<List<Habit>> readAllHabits() async {
     var habitList = new List<Habit>();
-
     try{
       final file = await _localFile;
       var contents = await file.readAsString();
-      Map<String, dynamic> user = jsonDecode(contents);
-      user.forEach((name, date) => habitList.add(Habit(name, date)));
-      return habitList;
+      return Habit.fromJsonList(contents);
     } catch (e){
       print(e.toString());
       return habitList;
