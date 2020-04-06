@@ -81,9 +81,14 @@ class _HabitsState extends State<Habits> {
                 if(snapshot.hasData) {
                   if(snapshot.data.length == 0) {
                       return Center(
-                          child: Text(
-                              'No items'
-                          )
+                        child: Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage('assets/emptylist.png'),
+                                fit: BoxFit.scaleDown,
+                              )
+                            ),
+                        ),
                       );
                     } else{
                     return ListView.builder(
