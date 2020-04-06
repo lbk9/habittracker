@@ -1,3 +1,4 @@
+import 'package:flhabittracker/services/storage_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flhabittracker/models/habit_model.dart';
@@ -10,23 +11,17 @@ class Habits extends StatefulWidget {
 }
 
 class _HabitsState extends State<Habits> {
-  List<Habit> habitList =[
-    Habit('Yoga', DateTime.now()),
-    Habit('Run', DateTime.now()),
-    Habit('Cycle', DateTime.now()),
-    Habit('Home workout', DateTime.now()),
-    Habit('Water plants', DateTime.now())
-  ];
+  StorageService storageService = new StorageService();
+
+  Future<List<Habit>> getHabits() async {
+    return storageService.readAllHabits();
+  }
 
   void incrementStreak(int index){
     setState(() {
-      habitList[index].streak++;
+      StorageService storageService = new StorageService();
+      storageService.clearFileContents();
     });
-  }
-
-  void addHabit(Habit habit){
-    var newHabit = new Habit(habit.title, habit.latestEntry);
-    habitList.add(newHabit);
   }
 
   @override
@@ -47,21 +42,92 @@ class _HabitsState extends State<Habits> {
           ),
         ),
       ),
-      body: ListView.builder(
-        itemCount: habitList.length,
-        itemBuilder: (context, index) {
-          return Card(
-            color: Colors.blueGrey[100],
-            child: ListTile(
-              title: Text(habitList[index].title),
-              subtitle: Text('You last done this on ${habitList[index].latestEntryAsDate}'),
-              trailing: Text('${habitList[index].streak}'),
-              onTap: (){
-                incrementStreak(index);
+      body: Column(
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              RaisedButton(
+                color: Colors.purpleAccent,
+                onPressed: () {
+                  StorageService storageService = new StorageService();
+                  var jsonList = storageService.readAllHabits();
+                },
+                child: const Text(
+                  'Load Habits',
+                  style: const TextStyle(
+                    color: Colors.white
+                  ),
+                ),
+              ),
+              RaisedButton(
+                color: Colors.red,
+                onPressed: () {
+                  StorageService storageService = new StorageService();
+                  storageService.clearFileContents();
+                },
+                child: const Text(
+                  'Clear Habits',
+                  style: const TextStyle(
+                      color: Colors.white
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Flexible(
+            child: FutureBuilder(
+              future: getHabits(),
+              builder: (BuildContext context, AsyncSnapshot snapshot){
+                if(snapshot.hasData) {
+                  if(snapshot.data.length == 0) {
+                      return Center(
+                        child: Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage('assets/emptylist.png'),
+                                fit: BoxFit.scaleDown,
+                              )
+                            ),
+                        ),
+                      );
+                    } else{
+                    return ListView.builder(
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (BuildContext context, int index){
+                        return Card(
+                          color: Colors.blueGrey[100],
+                          child: ListTile(
+                            title: Text(snapshot.data[index].title),
+                            subtitle: Text('You last done this on ${snapshot.data[index].latestEntryAsDate}'),
+                            trailing: Text('${snapshot.data[index].streak}'),
+                            onTap: (){
+                              // need to save to JSON and reload
+                            },
+                          ),
+                        );
+                      },
+                    );
+                  }
+                  } else{
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      CircularProgressIndicator(
+                        strokeWidth: 8.0,
+                        backgroundColor: Colors.white,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.purpleAccent),
+                      ),
+                      Text(
+                        'Gathering habits...'
+                      ),
+                    ],
+                  );
+                }
               },
             ),
-          );
-        },
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.purpleAccent,

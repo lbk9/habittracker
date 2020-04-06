@@ -1,8 +1,10 @@
 import 'package:flhabittracker/pages/habit_screen.dart';
+import 'package:flhabittracker/services/storage_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flhabittracker/animations/page_bounce_transition.dart';
+import 'package:flhabittracker/models/habit_model.dart';
 
 class AddHabit extends StatefulWidget {
   @override
@@ -72,9 +74,7 @@ class _AddHabitState extends State<AddHabit> {
                       color: Colors.white
                     ),
                   ),
-                  onPressed: (){
-                    Navigator.pushReplacement(context, CustomPageBounceTransition(widget: Habits(), alignment: Alignment.center));
-                  },
+                  onPressed: saveAndNavigate,
                   shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
                 ),
               )
@@ -83,5 +83,24 @@ class _AddHabitState extends State<AddHabit> {
         )
       ),
       );
+  }
+
+  Future<void> saveAndNavigate() async {
+    StorageService storageService = new StorageService();
+    List<Habit> habits = new List<Habit>();
+    var habit = new Habit('test1', DateTime.now());
+    var habit2 = new Habit('test2', DateTime.now());
+    var habit3 = new Habit('test3', DateTime.now());
+    habits.add(habit);
+    habits.add(habit2);
+    habits.add(habit3);
+    // read habit list from file
+    // add contents to this list
+    // reconvert full list
+    var habitsFromFile = await storageService.readAllHabits();
+    habitsFromFile.forEach((habit) => habits.add(habit));
+    var habitJson = Habit.convertToJson(habits);
+    await storageService.persistAllHabits(habitJson);
+    Navigator.pushReplacement(context, CustomPageBounceTransition(widget: Habits(), alignment: Alignment.center));
   }
 }
