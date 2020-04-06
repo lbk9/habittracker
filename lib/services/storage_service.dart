@@ -27,7 +27,8 @@ class StorageService {
     final file = await _localFile;
     print('$habits, $file');
     // needs to updated to correctly store new habits without overwriting previous ones
-    return file.writeAsString('${await file.readAsString()},$habits');
+
+    return file.writeAsString('$habits');
   }
 
   Future<List<Habit>> readAllHabits() async {

@@ -94,6 +94,11 @@ class _AddHabitState extends State<AddHabit> {
     habits.add(habit);
     habits.add(habit2);
     habits.add(habit3);
+    // read habit list from file
+    // add contents to this list
+    // reconvert full list
+    var habitsFromFile = await storageService.readAllHabits();
+    habitsFromFile.forEach((habit) => habits.add(habit));
     var habitJson = Habit.convertToJson(habits);
     await storageService.persistAllHabits(habitJson);
     Navigator.pushReplacement(context, CustomPageBounceTransition(widget: Habits(), alignment: Alignment.center));
