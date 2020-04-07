@@ -47,19 +47,6 @@ class _HabitsState extends State<Habits> {
           Row(
             children: <Widget>[
               RaisedButton(
-                color: Colors.purpleAccent,
-                onPressed: () {
-                  StorageService storageService = new StorageService();
-                  var jsonList = storageService.readAllHabits();
-                },
-                child: const Text(
-                  'Load Habits',
-                  style: const TextStyle(
-                    color: Colors.white
-                  ),
-                ),
-              ),
-              RaisedButton(
                 color: Colors.red,
                 onPressed: () {
                   StorageService storageService = new StorageService();

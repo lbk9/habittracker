@@ -13,6 +13,7 @@ class AddHabit extends StatefulWidget {
 }
 
 class _AddHabitState extends State<AddHabit> {
+  DateTime dateToSend = DateTime.now();
   final _formKey = GlobalKey<FormState>();
   final titleController = TextEditingController();
   final dateController = TextEditingController();
@@ -72,6 +73,7 @@ class _AddHabitState extends State<AddHabit> {
                       firstDate: DateTime(DateTime.now().year),
                       lastDate: DateTime(DateTime.now().year + 1)
                   ).then((date) {
+                    dateToSend = date;
                     dateController.text = showFormattedDate(date);
                   });
                 },
@@ -108,7 +110,7 @@ class _AddHabitState extends State<AddHabit> {
   Future<void> saveAndNavigate() async {
 
     List<Habit> habits = new List<Habit>();
-    var habit = new Habit(titleController.text, DateTime.now(), 1);
+    var habit = new Habit(titleController.text, dateToSend, 1);
     habits.add(habit);
     // read habit list from file
     // add contents to this list
