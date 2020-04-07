@@ -24,7 +24,7 @@ class _AddHabitState extends State<AddHabit> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.deepPurple[700],
+        backgroundColor: Colors.deepPurple[600],
         title: Text(
           'Add Habit',
           style: TextStyle(
