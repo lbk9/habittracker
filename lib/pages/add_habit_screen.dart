@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flhabittracker/animations/page_bounce_transition.dart';
 import 'package:flhabittracker/models/habit_model.dart';
+import 'package:intl/intl.dart';
 
 class AddHabit extends StatefulWidget {
   @override
@@ -12,14 +13,18 @@ class AddHabit extends StatefulWidget {
 }
 
 class _AddHabitState extends State<AddHabit> {
+  DateTime dateToSend = DateTime.now();
   final _formKey = GlobalKey<FormState>();
+  final titleController = TextEditingController();
+  final dateController = TextEditingController();
+  StorageService storageService = new StorageService();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.deepPurple[700],
+        backgroundColor: Colors.deepPurple[600],
         title: Text(
           'Add Habit',
           style: TextStyle(
@@ -30,7 +35,7 @@ class _AddHabitState extends State<AddHabit> {
       body: Padding(
         padding: const EdgeInsets.all(30.0),
         child: Form(
-          key: _formKey,
+          key: this._formKey,
           child: new ListView(
             children: <Widget>[
               new TextFormField(
@@ -42,14 +47,16 @@ class _AddHabitState extends State<AddHabit> {
                     Icons.edit,
                     color: Colors.grey),
                   labelText: 'Habit',
-                  focusColor: Colors.purple
+                  focusColor: Colors.purple,
                 ),
                 keyboardType: TextInputType.text,
                 style: TextStyle(
                   color: Colors.black
                 ),
+                controller: titleController,
               ),
               new TextFormField(
+                controller: dateController,
                 decoration: const InputDecoration(
                   labelStyle: TextStyle(
                     color: Colors.purple,
@@ -57,9 +64,19 @@ class _AddHabitState extends State<AddHabit> {
                   icon: const Icon(
                     Icons.date_range,
                     color: Colors.grey),
-                  labelText: 'Date & Time'
+                  labelText: 'Date'
                 ),
-                keyboardType: TextInputType.datetime,
+                onTap: (){
+                  showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(DateTime.now().year),
+                      lastDate: DateTime(DateTime.now().year + 1)
+                  ).then((date) {
+                    dateToSend = date;
+                    dateController.text = showFormattedDate(date);
+                  });
+                },
                 style: TextStyle(
                   color: Colors.black
                 ),
@@ -85,22 +102,31 @@ class _AddHabitState extends State<AddHabit> {
       );
   }
 
+  String showFormattedDate(DateTime date){
+    final dateFormatter = DateFormat('dd/MM/yyyy');
+    return dateFormatter.format(date);
+  }
+
   Future<void> saveAndNavigate() async {
-    StorageService storageService = new StorageService();
+
     List<Habit> habits = new List<Habit>();
-    var habit = new Habit('test1', DateTime.now());
-    var habit2 = new Habit('test2', DateTime.now());
-    var habit3 = new Habit('test3', DateTime.now());
+    var habit = new Habit(titleController.text, dateToSend, 1);
     habits.add(habit);
-    habits.add(habit2);
-    habits.add(habit3);
     // read habit list from file
     // add contents to this list
     // reconvert full list
     var habitsFromFile = await storageService.readAllHabits();
-    habitsFromFile.forEach((habit) => habits.add(habit));
+    if(habitsFromFile.length >= 1){
+      habitsFromFile.forEach((habit) => habits.add(habit));
+    }
     var habitJson = Habit.convertToJson(habits);
     await storageService.persistAllHabits(habitJson);
     Navigator.pushReplacement(context, CustomPageBounceTransition(widget: Habits(), alignment: Alignment.center));
+  }
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    super.dispose();
   }
 }

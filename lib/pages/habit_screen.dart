@@ -4,6 +4,8 @@ import 'package:flutter/painting.dart';
 import 'package:flhabittracker/models/habit_model.dart';
 import 'package:flhabittracker/pages/add_habit_screen.dart';
 import 'package:flhabittracker/animations/page_bounce_transition.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 class Habits extends StatefulWidget {
   @override
@@ -12,6 +14,8 @@ class Habits extends StatefulWidget {
 
 class _HabitsState extends State<Habits> {
   StorageService storageService = new StorageService();
+  ScrollController scrollController;
+  bool dialVisible = true;
 
   Future<List<Habit>> getHabits() async {
     return storageService.readAllHabits();
@@ -27,6 +31,16 @@ class _HabitsState extends State<Habits> {
   @override
   void initState() {
     super.initState();
+    scrollController = ScrollController()
+      ..addListener(() {
+        setDialVisible(scrollController.position.userScrollDirection == ScrollDirection.forward);
+      });
+  }
+
+  void setDialVisible(bool value) {
+    setState(() {
+      dialVisible = value;
+    });
   }
 
   @override
@@ -34,48 +48,15 @@ class _HabitsState extends State<Habits> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.deepPurple[700],
+        backgroundColor: Colors.deepPurple[600],
         title: Text(
-          'Habit Tracker',
+          'Trakr',
           style: TextStyle(
             color: Colors.white,
           ),
         ),
       ),
-      body: Column(
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              RaisedButton(
-                color: Colors.purpleAccent,
-                onPressed: () {
-                  StorageService storageService = new StorageService();
-                  var jsonList = storageService.readAllHabits();
-                },
-                child: const Text(
-                  'Load Habits',
-                  style: const TextStyle(
-                    color: Colors.white
-                  ),
-                ),
-              ),
-              RaisedButton(
-                color: Colors.red,
-                onPressed: () {
-                  StorageService storageService = new StorageService();
-                  storageService.clearFileContents();
-                },
-                child: const Text(
-                  'Clear Habits',
-                  style: const TextStyle(
-                      color: Colors.white
-                  ),
-                ),
-              ),
-            ],
-          ),
-          Flexible(
-            child: FutureBuilder(
+      body: FutureBuilder(
               future: getHabits(),
               builder: (BuildContext context, AsyncSnapshot snapshot){
                 if(snapshot.hasData) {
@@ -92,13 +73,14 @@ class _HabitsState extends State<Habits> {
                       );
                     } else{
                     return ListView.builder(
+                      controller: scrollController,
                       itemCount: snapshot.data.length,
                       itemBuilder: (BuildContext context, int index){
                         return Card(
                           color: Colors.blueGrey[100],
                           child: ListTile(
                             title: Text(snapshot.data[index].title),
-                            subtitle: Text('You last done this on ${snapshot.data[index].latestEntryAsDate}'),
+                            subtitle: Text('Last performed on ${snapshot.data[index].latestEntryAsDate}'),
                             trailing: Text('${snapshot.data[index].streak}'),
                             onTap: (){
                               // need to save to JSON and reload
@@ -109,34 +91,57 @@ class _HabitsState extends State<Habits> {
                     );
                   }
                   } else{
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      CircularProgressIndicator(
-                        strokeWidth: 8.0,
-                        backgroundColor: Colors.white,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.purpleAccent),
-                      ),
-                      Text(
-                        'Gathering habits...'
-                      ),
-                    ],
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        CircularProgressIndicator(
+                          strokeWidth: 8.0,
+                          backgroundColor: Colors.white,
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.purpleAccent),
+                        ),
+                        Text(
+                          'Gathering habits...'
+                        ),
+                      ],
+                    ),
                   );
                 }
               },
             ),
+      floatingActionButton: SpeedDial(
+        animatedIcon: AnimatedIcons.menu_close,
+        backgroundColor: Colors.purple[500],
+        visible: dialVisible,
+        curve: Curves.bounceInOut,
+        children: [
+          SpeedDialChild(
+            child: Icon(Icons.add),
+            backgroundColor: Colors.purpleAccent,
+            label: 'Add Habit',
+              labelStyle: TextStyle(
+                  fontSize: 18.0
+              ),
+            onTap: (){
+              Navigator.pushReplacement(context, CustomPageBounceTransition(widget: AddHabit(), alignment: Alignment.bottomRight));
+            }
           ),
+          SpeedDialChild(
+            child: Icon(Icons.delete_forever),
+            backgroundColor: Colors.red,
+            label: 'Delete All',
+            labelStyle: TextStyle(
+              fontSize: 18.0
+            ),
+            onTap: () {
+              storageService.clearFileContents();
+              setState(() {
+                getHabits();
+              });
+            }
+          )
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.purpleAccent,
-        onPressed: (){
-          Navigator.pushReplacement(context, CustomPageBounceTransition(widget: AddHabit(), alignment: Alignment.bottomRight));
-          },
-        child: Icon(
-          Icons.add,
-          color: Colors.white),
       ),
     );
   }
