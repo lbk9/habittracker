@@ -36,7 +36,7 @@ class _HabitsState extends State<Habits> {
       appBar: AppBar(
         backgroundColor: Colors.deepPurple[700],
         title: Text(
-          'Habit Tracker',
+          'Trakr',
           style: TextStyle(
             color: Colors.white,
           ),
@@ -64,6 +64,9 @@ class _HabitsState extends State<Habits> {
                 onPressed: () {
                   StorageService storageService = new StorageService();
                   storageService.clearFileContents();
+                  setState(() {
+                    getHabits();
+                  });
                 },
                 child: const Text(
                   'Clear Habits',
@@ -98,7 +101,7 @@ class _HabitsState extends State<Habits> {
                           color: Colors.blueGrey[100],
                           child: ListTile(
                             title: Text(snapshot.data[index].title),
-                            subtitle: Text('You last done this on ${snapshot.data[index].latestEntryAsDate}'),
+                            subtitle: Text('Last performed on ${snapshot.data[index].latestEntryAsDate}'),
                             trailing: Text('${snapshot.data[index].streak}'),
                             onTap: (){
                               // need to save to JSON and reload

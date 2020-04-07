@@ -10,32 +10,19 @@ class Habit{
   String latestEntryAsDate;
   int streak;
 
-  Habit(String title, DateTime latestEntry)
+  Habit(String title, DateTime latestEntry, int streak)
   {
     this.title = title;
     this.latestEntry = latestEntry;
     this.latestEntryAsDate = dateFormatter.format(latestEntry);
-    this.streak = getStreak(latestEntry);
-  }
-
-  int getStreak(DateTime addedDate)
-  {
-    var streak = 0;
-    if(addedDate.day == DateTime.now().day)
-      {
-        streak = 1;
-      }
-    else
-      {
-        streak = 1;
-      }
-    return streak;
+    this.streak = streak;
   }
 
   Map<String, dynamic> toJson() {
     return {
       "title": this.title,
-      "latestEntry": this.latestEntry.toString()
+      "latestEntry": this.latestEntry.toString(),
+      "streak": this.streak.toString()
     };
   }
 
@@ -45,6 +32,7 @@ class Habit{
   
   factory Habit.fromJson(Map<String, dynamic> json) => Habit(
     json['title'].toString(),
-    DateTime.parse(json['latestEntry'])
+    DateTime.parse(json['latestEntry']),
+    int.parse(json['streak'])
   );
 }
