@@ -6,22 +6,25 @@ Habit habitFromJson(String str) => Habit.fromJson(jsonDecode(str));
 class Habit{
   final dateFormatter = DateFormat('dd/MM/yyyy');
   String title;
-  DateTime latestEntry;
-  String latestEntryAsDate;
+  DateTime datePerformed;
+  DateTime dateAdded;
+  String datePerformedAsDate;
   int streak;
 
-  Habit(String title, DateTime latestEntry, int streak)
+  Habit(String title, DateTime datePerformed, DateTime dateAdded, int streak)
   {
     this.title = title;
-    this.latestEntry = latestEntry;
-    this.latestEntryAsDate = dateFormatter.format(latestEntry);
+    this.datePerformed = datePerformed;
+    this.dateAdded = dateAdded;
+    this.datePerformedAsDate = dateFormatter.format(datePerformed);
     this.streak = streak;
   }
 
   Map<String, dynamic> toJson() {
     return {
       "title": this.title,
-      "latestEntry": this.latestEntry.toString(),
+      "datePerformed": this.datePerformed.toString(),
+      "dateAdded":this.dateAdded.toString(),
       "streak": this.streak.toString()
     };
   }
@@ -32,7 +35,8 @@ class Habit{
   
   factory Habit.fromJson(Map<String, dynamic> json) => Habit(
     json['title'].toString(),
-    DateTime.parse(json['latestEntry']),
+    DateTime.parse(json['datePerformed']),
+    DateTime.parse(json['dateAdded']),
     int.parse(json['streak'])
   );
 }

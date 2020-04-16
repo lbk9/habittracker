@@ -43,6 +43,12 @@ class _AddHabitState extends State<AddHabit> {
                   labelStyle: TextStyle(
                     color: Colors.purple
                   ),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey, width: 1)
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.purpleAccent, width: 1)
+                  ),
                   icon: const Icon(
                     Icons.edit,
                     color: Colors.grey),
@@ -55,30 +61,39 @@ class _AddHabitState extends State<AddHabit> {
                 ),
                 controller: titleController,
               ),
-              new TextFormField(
-                controller: dateController,
-                decoration: const InputDecoration(
-                  labelStyle: TextStyle(
-                    color: Colors.purple,
+              Padding(
+                padding: const EdgeInsets.only(top:15.0),
+                child: new TextFormField(
+                  controller: dateController,
+                  decoration: const InputDecoration(
+                    labelStyle: TextStyle(
+                      color: Colors.purple,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey, width: 1)
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.purpleAccent, width: 1)
+                    ),
+                    icon: const Icon(
+                      Icons.date_range,
+                      color: Colors.grey),
+                    labelText: 'Date'
                   ),
-                  icon: const Icon(
-                    Icons.date_range,
-                    color: Colors.grey),
-                  labelText: 'Date'
-                ),
-                onTap: (){
-                  showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(DateTime.now().year),
-                      lastDate: DateTime(DateTime.now().year + 1)
-                  ).then((date) {
-                    dateToSend = date;
-                    dateController.text = showFormattedDate(date);
-                  });
-                },
-                style: TextStyle(
-                  color: Colors.black
+                  onTap: (){
+                    showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(DateTime.now().year),
+                        lastDate: DateTime(DateTime.now().year + 1)
+                    ).then((date) {
+                      dateToSend = date;
+                      dateController.text = showFormattedDate(date);
+                    });
+                  },
+                  style: TextStyle(
+                    color: Colors.black
+                  ),
                 ),
               ),
               Padding(
@@ -91,7 +106,10 @@ class _AddHabitState extends State<AddHabit> {
                       color: Colors.white
                     ),
                   ),
-                  onPressed: saveAndNavigate,
+                  onPressed: (){
+                    persistHabit();
+                    Navigator.pushReplacement(context, CustomPageBounceTransition(widget: Habits(), alignment: Alignment.center));
+                  },
                   shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
                 ),
               )
@@ -107,26 +125,22 @@ class _AddHabitState extends State<AddHabit> {
     return dateFormatter.format(date);
   }
 
-  Future<void> saveAndNavigate() async {
+  Future<void> persistHabit() async {
+    var habit = new Habit(titleController.text, dateToSend, DateTime.now(), 1);
+    List<Habit> habits = [habit];
 
-    List<Habit> habits = new List<Habit>();
-    var habit = new Habit(titleController.text, dateToSend, 1);
-    habits.add(habit);
-    // read habit list from file
-    // add contents to this list
-    // reconvert full list
     var habitsFromFile = await storageService.readAllHabits();
     if(habitsFromFile.length >= 1){
       habitsFromFile.forEach((habit) => habits.add(habit));
     }
     var habitJson = Habit.convertToJson(habits);
     await storageService.persistAllHabits(habitJson);
-    Navigator.pushReplacement(context, CustomPageBounceTransition(widget: Habits(), alignment: Alignment.center));
   }
 
   @override
   void dispose() {
     titleController.dispose();
+    dateController.dispose();
     super.dispose();
   }
 }
