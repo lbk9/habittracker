@@ -21,13 +21,6 @@ class _HabitsState extends State<Habits> {
     return storageService.readAllHabits();
   }
 
-  void incrementStreak(int index){
-    setState(() {
-      StorageService storageService = new StorageService();
-      storageService.clearFileContents();
-    });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -80,10 +73,12 @@ class _HabitsState extends State<Habits> {
                           color: Colors.blueGrey[100],
                           child: ListTile(
                             title: Text(snapshot.data[index].title),
-                            subtitle: Text('Last performed on ${snapshot.data[index].latestEntryAsDate}'),
+                            subtitle: Text('Last performed on ${snapshot.data[index].datePerformedAsDate}'),
                             trailing: Text('${snapshot.data[index].streak}'),
                             onTap: (){
-                              // need to save to JSON and reload
+                              var listItem = snapshot.data[index];
+                              var incrementedStreak = listItem.streak++;
+                              snapshot.data[index].title = 'test';
                             },
                           ),
                         );
@@ -136,9 +131,7 @@ class _HabitsState extends State<Habits> {
             ),
             onTap: () {
               storageService.clearFileContents();
-              setState(() {
-                getHabits();
-              });
+              setState(() {});
             }
           )
         ],
